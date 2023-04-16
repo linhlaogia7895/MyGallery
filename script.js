@@ -20,7 +20,7 @@ aboutLink.addEventListener('click', function(event) {
 function generateGallery() {
     const gallery = document.querySelector('.gallery');
     const columns = document.querySelectorAll('.column');
-    const totalImages = 28;
+    const totalImages = 32;
     const margin = 15; 
     const maxWidth = gallery.clientWidth / 3 - margin;
     
@@ -51,3 +51,38 @@ function generateGallery() {
     }
 }
 generateGallery();
+const images = document.querySelectorAll('.column img');
+
+images.forEach((image) => {
+  image.addEventListener('click', (event) => {
+    // create a new image element for the zoomed-in version
+    const zoomedImg = document.createElement('img');
+    zoomedImg.src = event.target.src;
+    zoomedImg.classList.add('zoomed-image');
+
+    // add the zoomed-in image to the body
+    document.body.appendChild(zoomedImg);
+
+    // add a blurred background
+    const blurredBackground = document.createElement('div');
+    blurredBackground.classList.add('blurred-background');
+    document.body.appendChild(blurredBackground);
+
+    // disable clicking on other images while zoomed-in
+    images.forEach((img) => {
+      img.style.pointerEvents = 'none';
+    });
+    // close the zoomed image when clicking
+    const closeZoomedImg = () => {
+      zoomedImg.remove();
+      blurredBackground.remove();
+      images.forEach((img) => {
+        img.style.pointerEvents = 'auto';
+      });
+      document.body.removeEventListener('click', closeZoomedImg);
+    };
+    setTimeout(() => {
+      document.body.addEventListener('click', closeZoomedImg);
+    }, 0);
+  });
+});
